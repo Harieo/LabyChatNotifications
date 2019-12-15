@@ -83,30 +83,57 @@ public class ChatNotifications extends LabyModAddon {
 		list.add(mutedElement);
 	}
 
+	/**
+	 * @return whether the addon should be case sensitive when scanning for tags, defined by the user
+	 */
 	public boolean isCaseSensitive() {
 		return isCaseSensitive;
 	}
 
+	/**
+	 * @return whether the user has requested that this addon be muted for the time being
+	 */
 	public boolean isMuted() {
 		return isMuted;
 	}
 
+	/**
+	 * @return an instance of {@link TextFormatting} matching the chat colour selected by the user, for the purpose of
+	 * implementing with Forge's chat system
+	 */
 	public TextFormatting getSelectedFormatting() {
 		return selectedColour.getMatchingFormatting();
 	}
 
+	/**
+	 * @return the colour which the user selected to format chat in
+	 */
 	public ChatColour getSelectedColour() {
 		return selectedColour;
 	}
 
+	/**
+	 * Sets the local volume by taking a whole percentage and dividing it by 100 to match Minecraft's standards
+	 *
+	 * @param percentage given by the user
+	 */
 	private void setVolume(int percentage) {
 		this.volume = percentage / 100F;
 	}
 
+	/**
+	 * @return the user-defined volume to play a ping at
+	 */
 	public float getVolume() {
 		return volume;
 	}
 
+	/**
+	 * Parses a string separated list of phrases and accounts for extra spaces which can be expected from users, adding
+	 * them cleanly (clearing beforehand) into {@link #tags} list
+	 *
+	 * @param trimmedString to parse
+	 */
 	private void parseTags(String trimmedString) {
 		List<String> tempTags = new ArrayList<>(); // If this fails, we don't want to ruin the perfect values
 
@@ -134,6 +161,11 @@ public class ChatNotifications extends LabyModAddon {
 		}
 	}
 
+	/**
+	 * Serializes the current list of {@link #tags} into a single string which can then be displayed to a user
+	 *
+	 * @return the serialized string of tags
+	 */
 	private String serializeCurrentTags() {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < tags.size(); i++) {
@@ -145,10 +177,16 @@ public class ChatNotifications extends LabyModAddon {
 		return builder.toString();
 	}
 
+	/**
+	 * @return the latest list of parsed tags
+	 */
 	public List<String> getTags() {
 		return tags;
 	}
 
+	/**
+	 * @return the instance of the addon, as created by LabyMod's core
+	 */
 	public static ChatNotifications getInstance() {
 		return instance;
 	}

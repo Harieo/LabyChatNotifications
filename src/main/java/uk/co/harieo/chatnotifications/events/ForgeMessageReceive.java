@@ -14,6 +14,7 @@ public class ForgeMessageReceive {
 	private ResourceLocation resourceLocation;
 
 	public ForgeMessageReceive() {
+		// Adds the location of the sound which is EXP orb pickup from Vanilla
 		resourceLocation = new ResourceLocation("minecraft", "entity.experience_orb.pickup");
 	}
 
@@ -25,12 +26,13 @@ public class ForgeMessageReceive {
 		}
 
 		String message = event.getMessage();
-
-		for (String tag : core.getTags()) {
-			if (core.isCaseSensitive() && message.contains(tag)) {
+		for (String tag : core.getTags()) { // Loop through all tags to scan for
+			if (core.isCaseSensitive() && message.contains(tag)) { // Case sensitive scanning
 				pingAndFormat(core, event, tag);
-			} else if (!core.isCaseSensitive() && message.toLowerCase().contains(tag.toLowerCase())) {
+			} else if (!core.isCaseSensitive() && message.toLowerCase().contains(tag.toLowerCase())) { // Not case sensitive scanning
 				String lowercaseMessage = message.toLowerCase();
+				// Uses substring to compensate for the improper case validation, or else all messages would become
+				// lower case regardless of their actual casing
 				int tagStart = lowercaseMessage.indexOf(tag.toLowerCase());
 				int tagFinish = tagStart + tag.length();
 				pingAndFormat(core, event, message.substring(tagStart, tagFinish));
@@ -38,6 +40,14 @@ public class ForgeMessageReceive {
 		}
 	}
 
+	/**
+	 * Assuming that all data has been already verified, pings the player and formats the chat based on their requested
+	 * settings from {@link ChatNotifications} core
+	 *
+	 * @param core to retrieve user settings from
+	 * @param event which the message came from
+	 * @param tag to be formatted, if applicable
+	 */
 	private void pingAndFormat(ChatNotifications core, ServerChatEvent event, String tag) {
 		FMLClientHandler.instance().getClientPlayerEntity()
 				.playSound(new SoundEvent(resourceLocation), core.getVolume(), 1);
