@@ -2,9 +2,7 @@ package uk.co.harieo.chatnotifications.events;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -33,7 +31,7 @@ public class ForgeMessageReceive {
 						.playSound(new SoundEvent(resourceLocation), core.getVolume(), 1);
 
 				// Make sure that formatting isn't disabled in any way
-				if (core.isFormatting() && core.getSelectedFormatting() != TextFormatting.RESET) {
+				if (core.getSelectedFormatting() != TextFormatting.RESET) {
 					// Send a new message with the detected tag in a formatted colour
 					core.getApi().displayMessageInChat(message.replace(tag,
 							core.getSelectedFormatting() + tag + TextFormatting.RESET));

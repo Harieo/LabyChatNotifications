@@ -16,7 +16,6 @@ public class ChatNotifications extends LabyModAddon {
 
 	private static ChatNotifications instance;
 	private List<String> tags = new ArrayList<>();
-	private boolean isFormatting = true;
 	private boolean isCaseSensitive = false;
 	private ChatColour selectedColour = ChatColour.YELLOW;
 	// Volume is accepted as an integer out of 100, or a whole percentage, which then is divided by 100 to get the float
@@ -41,7 +40,6 @@ public class ChatNotifications extends LabyModAddon {
 			tags.add(getApi().getPlayerUsername()); // Default value for invalid config
 		}
 
-		this.isFormatting = !getConfig().has("isFormatting") || getConfig().get("isFormatting").getAsBoolean();
 		this.isCaseSensitive = getConfig().has("caseSensitivity") && getConfig().get("caseSensitivity").getAsBoolean();
 		if (getConfig().has("volume")) {
 			this.rawVolume = getConfig().get("volume").getAsInt(); // For display matters as decimals are ugly
@@ -63,9 +61,6 @@ public class ChatNotifications extends LabyModAddon {
 		volumeElement.setRange(1, 100);
 		volumeElement.setSteps(1);
 
-		BooleanElement enabledElement = new BooleanElement("Use Colouring in Tags?", this,
-				new ControlElement.IconData(Material.REDSTONE_LAMP_OFF), "isFormatting", isFormatting);
-
 		DropDownMenu<ChatColour> colourDropDownMenu = new DropDownMenu<ChatColour>(
 				"Tag Formatting Colour", 0, 0, 0, 0)
 				.fill(ChatColour.values());
@@ -78,14 +73,6 @@ public class ChatNotifications extends LabyModAddon {
 		list.add(tagsElement);
 		list.add(caseSensitiveElement);
 		list.add(volumeElement);
-	}
-
-	private void setIsFormatting(boolean isFormatting) {
-		this.isFormatting = isFormatting;
-	}
-
-	public boolean isFormatting() {
-		return isFormatting;
 	}
 
 	private void setCaseSensitive(boolean isCaseSensitive) {
