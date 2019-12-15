@@ -2,6 +2,7 @@ package uk.co.harieo.chatnotifications.events;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -19,7 +20,7 @@ public class ForgeMessageReceive {
 	@SubscribeEvent
 	public void onMessageReceive(ServerChatEvent event) {
 		ChatNotifications core = ChatNotifications.getInstance();
-		if (event.getPlayer().getUniqueID().equals(core.getApi().getPlayerUUID())) {
+		if (event.getPlayer().getUniqueID().equals(core.getApi().getPlayerUUID()) || core.isMuted()) {
 			return; // Don't scan messages sent by the user
 		}
 
@@ -33,11 +34,9 @@ public class ForgeMessageReceive {
 				// Make sure that formatting isn't disabled in any way
 				if (core.getSelectedFormatting() != TextFormatting.RESET) {
 					// Send a new message with the detected tag in a formatted colour
-					core.getApi().displayMessageInChat(message.replace(tag,
-							core.getSelectedFormatting() + tag + TextFormatting.RESET));
+					event.setComponent(new TextComponentString(event.getComponent().getFormattedText()
+							.replace(tag, core.getSelectedFormatting() + tag + TextFormatting.RESET)));
 				}
-
-				event.setCanceled(true);
 			}
 		}
 	}

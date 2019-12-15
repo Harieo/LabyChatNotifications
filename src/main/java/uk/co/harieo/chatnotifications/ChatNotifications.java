@@ -17,6 +17,7 @@ public class ChatNotifications extends LabyModAddon {
 	private static ChatNotifications instance;
 	private List<String> tags = new ArrayList<>();
 	private boolean isCaseSensitive = false;
+	private boolean isMuted = false;
 	private ChatColour selectedColour = ChatColour.YELLOW;
 	// Volume is accepted as an integer out of 100, or a whole percentage, which then is divided by 100 to get the float
 	private float volume = 0.5F;
@@ -40,7 +41,10 @@ public class ChatNotifications extends LabyModAddon {
 			tags.add(getApi().getPlayerUsername()); // Default value for invalid config
 		}
 
+		// Both default to false
+		this.isMuted = getConfig().has("muted") && getConfig().get("muted").getAsBoolean();
 		this.isCaseSensitive = getConfig().has("caseSensitivity") && getConfig().get("caseSensitivity").getAsBoolean();
+
 		if (getConfig().has("volume")) {
 			this.rawVolume = getConfig().get("volume").getAsInt(); // For display matters as decimals are ugly
 			setVolume(rawVolume);
@@ -59,7 +63,7 @@ public class ChatNotifications extends LabyModAddon {
 		SliderElement volumeElement = new SliderElement("Ping Volume", this, new IconData(Material.EXP_BOTTLE),
 				"volume", rawVolume);
 		volumeElement.setRange(1, 100);
-		volumeElement.setSteps(1);
+		volumeElement.setSteps(5);
 
 		DropDownMenu<ChatColour> colourDropDownMenu = new DropDownMenu<ChatColour>(
 				"Tag Formatting Colour", 0, 0, 0, 0)
@@ -69,18 +73,22 @@ public class ChatNotifications extends LabyModAddon {
 		colourDropDownMenu.setSelected(ChatColour.YELLOW);
 		colourDropDown.setCallback(colour -> this.selectedColour = colour);
 
+		BooleanElement mutedElement = new BooleanElement("Mute Addon", this,
+				new ControlElement.IconData(Material.BARRIER), "muted", this.isMuted);
+
 		list.add(colourDropDown);
 		list.add(tagsElement);
 		list.add(caseSensitiveElement);
 		list.add(volumeElement);
-	}
-
-	private void setCaseSensitive(boolean isCaseSensitive) {
-		this.isCaseSensitive = isCaseSensitive;
+		list.add(mutedElement);
 	}
 
 	public boolean isCaseSensitive() {
 		return isCaseSensitive;
+	}
+
+	public boolean isMuted() {
+		return isMuted;
 	}
 
 	public TextFormatting getSelectedFormatting() {
