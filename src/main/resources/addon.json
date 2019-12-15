@@ -1,0 +1,9 @@
+{
+	"uuid": "%uuid%",
+	"name": "Chat Notifications",
+	"mainClass": "uk.co.harieo.chatnotifications.ChatNotifications",
+	"description": "An easy to use pinging system for in-game chat to notify you of words you want to look out for!",
+	"version": 1,
+	"author": "Harieo",
+	"category": 2
+}
