@@ -27,17 +27,26 @@ public class ForgeMessageReceive {
 		String message = event.getMessage();
 
 		for (String tag : core.getTags()) {
-			if (message.contains(tag)) {
-				FMLClientHandler.instance().getClientPlayerEntity()
-						.playSound(new SoundEvent(resourceLocation), core.getVolume(), 1);
-
-				// Make sure that formatting isn't disabled in any way
-				if (core.getSelectedFormatting() != TextFormatting.RESET) {
-					// Send a new message with the detected tag in a formatted colour
-					event.setComponent(new TextComponentString(event.getComponent().getFormattedText()
-							.replace(tag, core.getSelectedFormatting() + tag + TextFormatting.RESET)));
-				}
+			if (core.isCaseSensitive() && message.contains(tag)) {
+				pingAndFormat(core, event, tag);
+			} else if (!core.isCaseSensitive() && message.toLowerCase().contains(tag.toLowerCase())) {
+				String lowercaseMessage = message.toLowerCase();
+				int tagStart = lowercaseMessage.indexOf(tag.toLowerCase());
+				int tagFinish = tagStart + tag.length();
+				pingAndFormat(core, event, message.substring(tagStart, tagFinish));
 			}
+		}
+	}
+
+	private void pingAndFormat(ChatNotifications core, ServerChatEvent event, String tag) {
+		FMLClientHandler.instance().getClientPlayerEntity()
+				.playSound(new SoundEvent(resourceLocation), core.getVolume(), 1);
+
+		// Make sure that formatting isn't disabled in any way
+		if (core.getSelectedFormatting() != TextFormatting.RESET) {
+			// Send a new message with the detected tag in a formatted colour
+			event.setComponent(new TextComponentString(event.getComponent().getFormattedText()
+					.replace(tag, core.getSelectedFormatting() + tag + TextFormatting.RESET)));
 		}
 	}
 
